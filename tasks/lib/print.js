@@ -3,6 +3,10 @@ module.exports = (function() {
 
   var colors = require( 'colors' );
 
+  function noReports( unused ) {
+    Object.getOwnPropertyNames( unused ).length === 0;
+  }
+
   function theme( text , name ) {
     text = text.toString();
     switch (name) {
@@ -16,6 +20,9 @@ module.exports = (function() {
   }
 
   return function( unused ) {
+    if( noReports( unused ) ) {
+      return;
+    }
     var RE_FILES = /(".*")\:/i;
     var RE_IMPORTS = /(".*")\,?$/i;
     var str = JSON.stringify( unused , null , 2 )
@@ -38,22 +45,3 @@ module.exports = (function() {
     console.log( '\n\n' + str + '\n' );
   }
 }());
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
