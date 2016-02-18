@@ -4,7 +4,7 @@ module.exports = (function() {
 
   var path = require( 'path' );
 
-  return function( files, importsToIgnore ) {
+  return function( files, importsToIgnore, logIgnoredVerbose ) {
 
     var result = {
       unused: {},
@@ -21,17 +21,24 @@ module.exports = (function() {
     var reportUnusedImport = function( unused ) {
       if (isIgnoredImport( unused )) {
         result.ignoredImports++;
-        return unused + '   (IGNORED)';
+        return logIgnoredVerbose && unused + '   (IGNORED)';
       } else {
         result.foundImports++;
         return unused;
       }
     };
 
+    var validReport = function( report ) {
+      return !!report;
+    }
+
     files.forEach(function( file ) {
       var name = path.basename( file.src );
       if (file.unused.length) {
-        result.unused[name] = file.unused.map(reportUnusedImport);
+        var fileReport = file.unused.map(reportUnusedImport).filter(validReport);
+        if(fileReport.length) {
+          result.unused[name] = fileReport;
+        }
         result.foundFiles++;
       }
     });

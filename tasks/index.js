@@ -51,7 +51,7 @@ module.exports = function( grunt ) {
     });
 
     var importsToIgnore = options.ignore ? ( options.ignore.constructor === Array ? options.ignore : [ options.ignore ] ) : [];
-    var result = aggregate( files, importsToIgnore );
+    var result = aggregate( files, importsToIgnore, options.logIgnoredVerbose );
     var msg;
 
     if (options.test) {
